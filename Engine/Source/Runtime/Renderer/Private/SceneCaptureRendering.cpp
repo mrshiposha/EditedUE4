@@ -821,14 +821,54 @@ void FScene::UpdateSceneCaptureContents(USceneCaptureComponentCube* CaptureCompo
 				BuildProjectionMatrix(CaptureSize, ECameraProjectionMode::Perspective, FOV, 1.0f, ProjectionMatrix);
 				FPostProcessSettings PostProcessSettings;
 
+				/* SHIPOSHA EDIT */
+				// SHIPOSHA_BEGIN
+				// Override some tone mapper non exposed settings to not have post process material changing them.
+				{
+					PostProcessSettings.bOverride_SceneColorTint = true;
+					PostProcessSettings.SceneColorTint = FLinearColor::White;
+
+					PostProcessSettings.bOverride_VignetteIntensity = true;
+					PostProcessSettings.VignetteIntensity = 0;
+
+					PostProcessSettings.bOverride_GrainIntensity = true;
+					PostProcessSettings.GrainIntensity = 0;
+
+					PostProcessSettings.bOverride_BloomDirtMask = true;
+					PostProcessSettings.BloomDirtMask = nullptr;
+					PostProcessSettings.bOverride_BloomDirtMaskIntensity = true;
+					PostProcessSettings.BloomDirtMaskIntensity = 0;
+
+					PostProcessSettings.bOverride_SceneFringeIntensity = true;
+					PostProcessSettings.SceneFringeIntensity = 0.0;
+				}
+
+				const bool bUseSceneColorTexture = false;
+				// SHIPOSHA_END
+
 				float StereoIPD = 0.0f;
 				if (bIsODS)
 				{
 					StereoIPD = (CaptureIter == 1) ? CaptureComponent->IPD * -0.5f : CaptureComponent->IPD * 0.5f;
 				}
 
-			FSceneRenderer* SceneRenderer = CreateSceneRendererForSceneCapture(this, CaptureComponent, TextureTarget->GameThread_GetRenderTargetResource(), CaptureSize, ViewRotationMatrix, Location, ProjectionMatrix, CaptureComponent->MaxViewDistanceOverride, true, &PostProcessSettings, 0, CaptureComponent->GetViewOwner(), StereoIPD);
-			SceneRenderer->ViewFamily.SceneCaptureSource = SCS_SceneColorHDR;
+			FSceneRenderer* SceneRenderer = CreateSceneRendererForSceneCapture
+			(
+				this, 
+				CaptureComponent, 
+				TextureTarget->GameThread_GetRenderTargetResource(), 
+				CaptureSize, 
+				ViewRotationMatrix, 
+				Location, 
+				ProjectionMatrix, 
+				CaptureComponent->MaxViewDistanceOverride, 
+				bUseSceneColorTexture,
+				&PostProcessSettings, 
+				0, 
+				CaptureComponent->GetViewOwner(), 
+				StereoIPD
+			);
+			SceneRenderer->ViewFamily.SceneCaptureSource = SCS_FinalColorLDR;//SCS_SceneColorHDR;
 
 				FTextureRenderTargetCubeResource* TextureRenderTarget = static_cast<FTextureRenderTargetCubeResource*>(TextureTarget->GameThread_GetRenderTargetResource());
 				FString EventName;

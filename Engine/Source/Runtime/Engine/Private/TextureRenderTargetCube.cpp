@@ -89,10 +89,12 @@ void UTextureRenderTargetCube::PostEditChangeProperty(FPropertyChangedEvent& Pro
 	// Allow for high resolution captures when ODS is enabled
 	static const auto CVarODSCapture = IConsoleManager::Get().FindTConsoleVariableDataInt(TEXT("vr.ODSCapture"));
 	const bool bIsODSCapture = CVarODSCapture && (CVarODSCapture->GetValueOnGameThread() != 0);
-	const int32 MaxSize = (bIsODSCapture) ? 4096 : 2048;
+	//const int32 MaxSize = (bIsODSCapture) ? 4096 : 2048;
 
 	EPixelFormat Format = GetFormat();
-	SizeX = FMath::Clamp<int32>(SizeX - (SizeX % GPixelFormats[Format].BlockSizeX),1,MaxSize);
+	//SizeX = FMath::Clamp<int32>(SizeX - (SizeX % GPixelFormats[Format].BlockSizeX),1,MaxSize);
+
+	SizeX = SizeX - (SizeX % GPixelFormats[Format].BlockSizeX);
 
 	Super::PostEditChangeProperty(PropertyChangedEvent);
 }
