@@ -157,6 +157,7 @@ public:
 	*/
 	virtual void UpdateSceneCaptureContents(class USceneCaptureComponent2D* CaptureComponent) {}
 	virtual void UpdateSceneCaptureContents(class USceneCaptureComponentCube* CaptureComponent) {}
+	virtual void UpdateSceneCaptureContents(class UStereoSceneCaptureComponent* CaptureComponent) {}
 	virtual void UpdatePlanarReflectionContents(class UPlanarReflectionComponent* CaptureComponent, class FSceneRenderer& MainSceneRenderer) {}
 
 	virtual void AddPrecomputedLightVolume(const class FPrecomputedLightVolume* Volume) {}
